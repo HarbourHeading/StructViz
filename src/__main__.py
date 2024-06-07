@@ -1,29 +1,45 @@
 """Module for visualizing data structures and algorithms"""
 
+
 import tkinter as tk
 from tkinter import HORIZONTAL
 import random
 import algorithms
 
-window = tk.Tk()
-window.minsize(700, 580)
 
-app_width, app_height = 700, 580
-screen_width, screen_height = window.winfo_screenwidth(), window.winfo_screenheight()
+def repeater(data_r, draw_data_r, speed):
+    global generator
 
-mid_x = (screen_width - app_width) // 2
-mid_y = (screen_height - app_height) // 2
+    if not generator:
 
-window.title("StructViz")
-window.iconbitmap("./assets/favicon.ico")
-window.geometry(f'{app_width}x{app_height}+{mid_x}+{mid_y}')
+        if navbarLB.curselection():
+            algorithmL.config(text=navbarLB.get(navbarLB.curselection()))
 
-select_alg = tk.StringVar()
-data = []
+            match navbarLB.get(navbarLB.curselection()):
+                case "Bubble sort":
+                    generator = algorithms.bubble(data_r, draw_data_r)
+                case _:
+                    pass
+    try:
+        next(generator)
+
+        if running_animation:
+            window.after(speed, repeater, data_r, draw_data_r, speed)
+        else:
+            generator = None
+
+        return
+
+    except StopIteration:
+        generator = None
 
 
 def regenerate():
     global data
+    global running_animation
+
+    if running_animation:
+        running_animation = False
 
     min_value = int(minEntry.get())
     max_value = int(maxEntry.get())
@@ -58,25 +74,42 @@ def draw_data(algo_data, colorlist):
 
 
 def start_algorithm():
-    global data
+    global running_animation
 
-    if navbarLB.curselection():
-        algorithmL.config(text=navbarLB.get(navbarLB.curselection()))
+    if not running_animation and navbarLB.curselection():
+        running_animation = True
+        repeater(data, draw_data, int(speedbar.get() * 1000))
+        start_button.config(text='Stop')
+    else:
+        running_animation = False
+        start_button.config(text='Start')
 
-        match navbarLB.get(navbarLB.curselection()):
-            case "Bubble sort":
-                algorithms.bubble(window, data, draw_data, speedbar.get())
-            case _:
-                pass
 
+window = tk.Tk()
+window.minsize(700, 580)
+
+app_width, app_height = 700, 580
+screen_width, screen_height = window.winfo_screenwidth(), window.winfo_screenheight()
+
+mid_x = (screen_width - app_width) // 2
+mid_y = (screen_height - app_height) // 2
+
+window.title("StructViz")
+window.iconbitmap("./assets/favicon.ico")
+window.geometry(f'{app_width}x{app_height}+{mid_x}+{mid_y}')
+
+select_alg = tk.StringVar()
+data = []
+generator = None
+running_animation = False
 
 window.columnconfigure(0, weight=0)
 window.columnconfigure(1, weight=45)
 window.rowconfigure((0, 1), weight=1)
 window.rowconfigure(2, weight=45)
 
-navbarLB = tk.Listbox(window, selectmode=tk.SINGLE)
-for item in ["Bubble sort", "Option 2", "Option 3"]:
+navbarLB = tk.Listbox(window, selectmode=tk.SINGLE, activestyle="none")
+for item in ["Bubble sort"]:
     navbarLB.insert(tk.END, item)
 navbarLB.grid(row=0, column=0, rowspan=3, sticky='nsew')
 
@@ -89,7 +122,7 @@ algorithmL.grid(row=0, column=1, sticky='nw', padx=10, pady=10)
 space_notation_l = tk.Label(userSettingsF, text='Time notation: ', background='bisque2')
 space_notation_l.grid(row=0, column=1, sticky='sw', padx=10, pady=10)
 
-amountEntry = tk.Scale(userSettingsF, from_=5, to=40, label='Amount', background='bisque2',
+amountEntry = tk.Scale(userSettingsF, from_=5, to=60, label='Amount', background='bisque2',
                        orient=HORIZONTAL, resolution=1, cursor='arrow')
 amountEntry.grid(row=0, column=1, sticky='n', padx=10, pady=10)
 
@@ -101,12 +134,12 @@ maxEntry = tk.Scale(userSettingsF, from_=10, to=100, resolution=1, background='b
                     orient=HORIZONTAL, label="Maximum Value")
 maxEntry.grid(row=1, column=1, sticky='se', padx=10, pady=10)
 
-speedbar = tk.Scale(userSettingsF, from_=0.10, to=2.0, length=100, digits=2, background='bisque2',
-                    resolution=0.1, orient=HORIZONTAL, label="Speed")
+speedbar = tk.Scale(userSettingsF, from_=0.01, to=2.0, length=100, digits=3, background='bisque2',
+                    resolution=0.01, orient=HORIZONTAL, label="Speed")
 speedbar.grid(row=0, column=1, sticky='ne', padx=10, pady=10)
 
-tk.Button(userSettingsF, text="Start", bg="Blue", command=start_algorithm, background='bisque2').grid(
-    row=1, column=1, sticky='nw', padx=10, pady=10)
+start_button = (tk.Button(userSettingsF, text="Start", bg="Blue", command=start_algorithm, background='bisque2'))
+start_button.grid(row=1, column=1, sticky='nw', padx=10, pady=10)
 
 tk.Button(userSettingsF, text="Regenerate", bg="Red", command=regenerate, background='bisque2').grid(
     row=1, column=1, sticky='sw', padx=10, pady=10)

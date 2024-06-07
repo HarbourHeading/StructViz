@@ -1,7 +1,7 @@
 """Module to implement the algorithms"""
 
 
-def bubble(window, data, draw_data, speed):
+def bubble(data, draw_data):
     """Bubble sort algorithm"""
 
     data_length = len(data)
@@ -12,10 +12,7 @@ def bubble(window, data, draw_data, speed):
             if data[j] > data[j + 1]:
                 data[j], data[j + 1] = data[j + 1], data[j]
 
-                # If swapped, become green, else stay red
                 draw_data(data, ['Green' if x == j + 1 else 'Red' for x in range(len(data))])
-                window.update()
-                window.after(int(speed * 1000))
+                yield
 
-    # Make sorted elements green
     draw_data(data, ['Green' for _ in range(len(data))])
