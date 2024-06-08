@@ -138,10 +138,10 @@ sort_speed = tk.Scale(user_settings, from_=0.01, to=2.0, length=100, digits=3, b
                       resolution=0.01, orient=HORIZONTAL, label="Speed")
 sort_speed.grid(row=0, column=1, sticky='ne', padx=10, pady=10)
 
-start_button = (tk.Button(user_settings, text="Start", bg="Blue", command=start_algorithm, background='bisque2'))
+start_button = (tk.Button(user_settings, text="Start", command=start_algorithm, background='bisque2'))
 start_button.grid(row=1, column=1, sticky='nw', padx=10, pady=10)
 
-tk.Button(user_settings, text="Regenerate", bg="Red", command=regenerate, background='bisque2').grid(
+tk.Button(user_settings, text="Regenerate", command=regenerate, background='bisque2').grid(
     row=1, column=1, sticky='sw', padx=10, pady=10)
 
 sort_canvas = tk.Canvas(window, background='bisque2')
