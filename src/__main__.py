@@ -10,16 +10,16 @@ import algorithms
 def repeater(data_r, draw_data_r, speed):
     global generator
 
-    if not generator:
+    if not generator and navbar.curselection():
+        algorithm.config(text=navbar.get(navbar.curselection()))
 
-        if navbar.curselection():
-            algorithm.config(text=navbar.get(navbar.curselection()))
+        match navbar.get(navbar.curselection()):
+            case "Bubble sort":
+                time_complexity.config(text="Time complexity: O(n^2)")
+                generator = algorithms.bubble(data_r, draw_data_r)
+            case _:
+                pass
 
-            match navbar.get(navbar.curselection()):
-                case "Bubble sort":
-                    generator = algorithms.bubble(data_r, draw_data_r)
-                case _:
-                    pass
     try:
         next(generator)
 
@@ -43,10 +43,10 @@ def regenerate():
 
     min_value = int(min_entry.get())
     max_value = int(max_entry.get())
-    amount_value = int(data_size.get())
+    input_value = int(input_size.get())
 
     data = []
-    for _ in range(amount_value):
+    for _ in range(input_value):
         data.append(random.randint(min_value, max_value + 1))
 
     draw_data(data, ['Red' for _ in range(len(data))])
@@ -122,9 +122,9 @@ algorithm.grid(row=0, column=1, sticky='nw', padx=10, pady=10)
 time_complexity = tk.Label(user_settings, text='Time complexity: ', background='bisque2')
 time_complexity.grid(row=0, column=1, sticky='sw', padx=10, pady=10)
 
-data_size = tk.Scale(user_settings, from_=5, to=60, label='Amount', background='bisque2',
-                     orient=HORIZONTAL, resolution=1, cursor='arrow')
-data_size.grid(row=0, column=1, sticky='n', padx=10, pady=10)
+input_size = tk.Scale(user_settings, from_=5, to=60, label='Amount', background='bisque2',
+                      orient=HORIZONTAL, resolution=1, cursor='arrow')
+input_size.grid(row=0, column=1, sticky='n', padx=10, pady=10)
 
 min_entry = tk.Scale(user_settings, from_=0, to=10, resolution=1, background='bisque2',
                      orient=HORIZONTAL, label="Minimum Value")
