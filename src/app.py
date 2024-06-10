@@ -72,7 +72,7 @@ class App(tk.Tk):
 
         if self.navbar.curselection() and not self.running_animation:
             self.running_animation = True
-            self.start_button.config(text='Stop')
+            self.start_button.config(text='Paused', state='disabled')
             self.algorithm.config(text=self.navbar.get(self.navbar.curselection()))
 
             speed = float(self.sort_speed.get())
@@ -88,11 +88,12 @@ class App(tk.Tk):
                 case _:
                     pass
 
+            self.start_button.config(text='Start', state='normal')
             self.draw_data(self.data, ['Green' for _ in range(len(self.data))])
 
         else:
             self.running_animation = False
-            self.start_button.config(text="Start")
+            self.start_button.config(text="Start", state='normal')
 
     def regenerate(self):
 
@@ -128,6 +129,3 @@ class App(tk.Tk):
             self.sort_canvas.create_rectangle(x_0, y_0, x_1, y_1, fill=color[i])
             self.sort_canvas.create_text(x_0 + 2, y_0, anchor='se', text=str(data[i]))
         self.update()
-
-
-
