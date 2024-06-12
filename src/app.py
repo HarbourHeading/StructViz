@@ -7,10 +7,10 @@ from src import algorithms
 
 
 class App(tk.Tk):
-    data = []
-    running_animation = False
+    data: list[int] = []
+    running_animation: bool = False
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.navbar = tk.Listbox(self, selectmode=tk.SINGLE, activestyle='none')
@@ -18,7 +18,7 @@ class App(tk.Tk):
             self.navbar.insert(tk.END, item)
 
         self.user_settings = tk.Frame(self, background='bisque2')
-        self.algorithm = tk.Label(self.user_settings, text='No algorithm selected', background='bisque2')
+        self.algorithm = tk.Label(self.user_settings, text='Algorithm: ', background='bisque2')
         self.time_complexity = tk.Label(self.user_settings, text='Time complexity: ', background='bisque2')
         self.input_size = tk.Scale(self.user_settings, from_=5, to=60, label='Amount', background='bisque2',
                                    orient=HORIZONTAL, resolution=1, cursor='arrow')
@@ -38,7 +38,7 @@ class App(tk.Tk):
 
         self.mainloop()
 
-    def configure_root(self):
+    def configure_root(self) -> None:
         self.minsize(700, 580)
 
         app_width, app_height = 700, 580
@@ -68,12 +68,14 @@ class App(tk.Tk):
         self.max_entry.grid(row=1, column=3, padx=10, pady=10)
         self.sort_canvas.grid(row=2, column=1, columnspan=3, sticky='news', padx=5, pady=5)
 
-    def start_algorithm(self):
+    def start_algorithm(self) -> None:
 
         if self.navbar.curselection() and not self.running_animation:
             self.running_animation = True
+
             self.start_button.config(text='Paused', state='disabled')
-            self.algorithm.config(text=self.navbar.get(self.navbar.curselection()))
+            self.regen_button.config(state='disabled')
+            self.algorithm.config(text="Algorithm: " + self.navbar.get(self.navbar.curselection()))
 
             speed = float(self.sort_speed.get())
 
@@ -89,13 +91,15 @@ class App(tk.Tk):
                     pass
 
             self.start_button.config(text='Start', state='normal')
+            self.regen_button.config(state='normal')
+
             self.draw_data(self.data, ['Green' for _ in range(len(self.data))])
 
         else:
             self.running_animation = False
             self.start_button.config(text="Start", state='normal')
 
-    def regenerate(self):
+    def regenerate(self) -> None:
 
         if self.running_animation:
             self.running_animation = False
@@ -110,7 +114,7 @@ class App(tk.Tk):
 
         self.draw_data(self.data, ['Red' for _ in range(len(self.data))])
 
-    def draw_data(self, data, color):
+    def draw_data(self, data: list[int], color: list[str]) -> None:
         self.sort_canvas.delete('all')
 
         canvas_height, canvas_width = 380, 500
