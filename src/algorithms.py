@@ -25,16 +25,10 @@ def quick_sort(data: list[int], draw_data: any, low: int, high: int, speed: floa
     if low < high:
         pivot_index = partition(data, draw_data, low, high, speed)
 
-        quick_sort(data, draw_data, low, pivot_index - 1, speed)  # Left-side of pivot
-        quick_sort(data, draw_data, pivot_index + 1, high, speed)  # Right-side of pivot
+        quick_sort(data, draw_data, low, pivot_index - 1, speed)    # Left-side of pivot
+        quick_sort(data, draw_data, pivot_index + 1, high, speed)   # Right-side of pivot
 
 
-# Grey - Unsorted elements
-# Blue - Pivot point element
-# White - Sorted half/partition
-# Red - Starting pointer
-# Yellow - Ending pointer
-# Green - All elements are sorted
 def get_color(data: list[int], low: int, high: int, border: int, cur_i: int, is_swapping: bool = False) -> List[str]:
     """Quick sort: Get color for data"""
 
@@ -44,19 +38,19 @@ def get_color(data: list[int], low: int, high: int, border: int, cur_i: int, is_
     for i in range(data_len):
 
         if high <= i <= low:
-            color_list.append('Grey')
+            color_list.append('Grey')   # Grey: Unsorted elements
         else:
-            color_list.append('White')
+            color_list.append('White')  # White: Sorted half/partition
 
         if i == low:
-            color_list[i] = 'Blue'
+            color_list[i] = 'Blue'      # Blue: Pivot point element
         elif i == border:
-            color_list[i] = 'Red'
+            color_list[i] = 'Red'       # Red: Starting pointer
         elif i == cur_i:
-            color_list[i] = 'Yellow'
+            color_list[i] = 'Yellow'    # Yellow: Ending pointer
 
         if is_swapping and (i == border or i == cur_i):
-            color_list[i] = 'Green'
+            color_list[i] = 'Green'     # Green: Sort complete
 
     return color_list
 
