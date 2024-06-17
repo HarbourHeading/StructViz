@@ -1,20 +1,23 @@
 """Module for visualizing data structures and algorithms"""
+
 import random
 import tkinter as tk
-from tkinter import HORIZONTAL
+from tkinter import HORIZONTAL, font
 
-from src import algorithms
+import algorithms
 
 
 class App(tk.Tk):
     data: list[int] = []
-    running_animation: bool = False
 
     def __init__(self) -> None:
         super().__init__()
 
+        self.defaultFont = font.nametofont("TkDefaultFont")
+        self.defaultFont.config(family="Arial")
+
         self.navbar = tk.Listbox(self, selectmode=tk.SINGLE, activestyle='none')
-        for item in ["Bubble sort", "Quick sort"]:
+        for item in ["Bubble sort", "Quick sort", "Merge sort"]:
             self.navbar.insert(tk.END, item)
 
         self.user_settings = tk.Frame(self, background='bisque2')
@@ -39,6 +42,7 @@ class App(tk.Tk):
         self.mainloop()
 
     def configure_root(self) -> None:
+        """Initialize the root window"""
         self.minsize(700, 580)
 
         app_width, app_height = 700, 580
@@ -69,40 +73,39 @@ class App(tk.Tk):
         self.sort_canvas.grid(row=2, column=1, columnspan=3, sticky='news', padx=5, pady=5)
 
     def start_algorithm(self) -> None:
+        """Start sorting process"""
 
-        if self.navbar.curselection() and not self.running_animation:
-            self.running_animation = True
+        if not self.navbar.curselection():  # No algorithm from navbar selected
+            return
 
-            self.start_button.config(text='Paused', state='disabled')
-            self.regen_button.config(state='disabled')
-            self.algorithm.config(text="Algorithm: " + self.navbar.get(self.navbar.curselection()))
+        self.start_button.config(text='Paused', state='disabled')
+        self.regen_button.config(state='disabled')
+        self.algorithm.config(text="Algorithm: " + self.navbar.get(self.navbar.curselection()))
 
-            speed = float(self.sort_speed.get())
+        speed = float(self.sort_speed.get())
 
-            match self.navbar.get(self.navbar.curselection()):
-                case "Bubble sort":
-                    self.time_complexity.config(text="Time complexity: O(n^2)")
-                    algorithms.bubble_sort(self.data, self.draw_data, speed)
+        match self.navbar.get(self.navbar.curselection()):
+            case "Bubble sort":
+                self.time_complexity.config(text="Time complexity: O(n^2)")
+                algorithms.bubble_sort_algorithm(self.data, self.draw_data, speed)
 
-                case "Quick sort":
-                    self.time_complexity.config(text="Time complexity: O(n^2)")
-                    algorithms.quick_sort(self.data, self.draw_data, 0, len(self.data) - 1, speed)
-                case _:
-                    pass
+            case "Quick sort":
+                self.time_complexity.config(text="Time complexity: O(n^2)")
+                algorithms.quick_sort_algorithm(self.data, self.draw_data, 0, len(self.data) - 1, speed)
 
-            self.start_button.config(text='Start', state='normal')
-            self.regen_button.config(state='normal')
+            case "Merge sort":
+                self.time_complexity.config(text="Time complexity: O(n*log(n))")
+                algorithms.merge_sort_algorithm(self.data, self.draw_data, 0, len(self.data) - 1, speed)
 
-            self.draw_data(self.data, ['Green' for _ in range(len(self.data))])
+            case _:  # In case of unexpected behaviour
+                pass
 
-        else:
-            self.running_animation = False
-            self.start_button.config(text="Start", state='normal')
+        self.start_button.config(text='Start', state='normal')
+        self.regen_button.config(state='normal')
+
+        self.draw_data(self.data, ['Green'] * len(self.data))
 
     def regenerate(self) -> None:
-
-        if self.running_animation:
-            self.running_animation = False
 
         min_value = int(self.min_entry.get())
         max_value = int(self.max_entry.get())
@@ -110,9 +113,9 @@ class App(tk.Tk):
 
         self.data = []
         for _ in range(input_value):
-            self.data.append(random.randint(min_value, max_value + 1))
+            self.data.append(random.randint(min_value, max_value))
 
-        self.draw_data(self.data, ['Red' for _ in range(len(self.data))])
+        self.draw_data(self.data, ['Red'] * len(self.data))
 
     def draw_data(self, data: list[int], color: list[str]) -> None:
         self.sort_canvas.delete('all')
