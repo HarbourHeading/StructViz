@@ -24,12 +24,12 @@ def merging(data: list[int], draw_data: callable, low: int, mid: int, high: int,
 
     for i in range(0, left_side):
         left_list[i] = data[low + i]
-        draw_data(data, ['Blue' if x == i else 'Grey' for x in range(len(data))])
+        draw_data(data, ['Grey' for _ in range(len(data))])
         time.sleep(speed)
 
     for j in range(0, right_side):
         right_list[j] = data[mid + 1 + j]
-        draw_data(data, ['Yellow' if x == j else 'Grey' for x in range(len(data))])
+        draw_data(data, ['Grey' for _ in range(len(data))])
         time.sleep(speed)
 
     i = 0  # Left index
@@ -37,27 +37,27 @@ def merging(data: list[int], draw_data: callable, low: int, mid: int, high: int,
     k = low  # Merged list index
 
     while i < left_side and j < right_side:
-        draw_data(data, ['Purple' if x == left_side or x == j else 'grey' for x in range(len(data))])
         if left_list[i] <= right_list[j]:
             data[k] = left_list[i]
+            draw_data(data, ['Grey' for _ in range(len(data))])
             i += 1
         else:
-            draw_data(data, ['Lightblue' if x == left_side or x == j else 'grey' for x in range(len(data))])
             data[k] = right_list[j]
+            draw_data(data, ['Grey' for _ in range(len(data))])
             j += 1
         k += 1
         time.sleep(speed)
 
     while i < left_side:
         data[k] = left_list[i]
-        draw_data(data, ['Lightgreen' if x == i or x == j else 'grey' for x in range(len(data))])
+        draw_data(data, ['Grey' for _ in range(len(data))])
         i += 1
         k += 1
         time.sleep(speed)
 
     while j < right_side:
         data[k] = right_list[j]
-        draw_data(data, ['White' if x == left_side or x == j else 'grey' for x in range(len(data))])
+        draw_data(data, ['Grey' for _ in range(len(data))])
         j += 1
         k += 1
         time.sleep(speed)
