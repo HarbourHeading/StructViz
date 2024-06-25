@@ -1,8 +1,12 @@
 """Module for visualizing data structures and algorithms"""
 
-import random
+
 import tkinter as tk
+from random import randint
+from sys import exit
 from tkinter import HORIZONTAL, font
+
+from _tkinter import TclError
 
 import algorithms
 
@@ -43,8 +47,8 @@ class App(tk.Tk):
 
     def configure_root(self) -> None:
         """Initialize the root window"""
-        self.minsize(700, 580)
 
+        self.minsize(700, 580)
         app_width, app_height = 700, 580
         screen_width, screen_height = self.winfo_screenwidth(), self.winfo_screenheight()
 
@@ -113,12 +117,15 @@ class App(tk.Tk):
 
         self.data = []
         for _ in range(input_value):
-            self.data.append(random.randint(min_value, max_value))
+            self.data.append(randint(min_value, max_value))
 
         self.draw_data(self.data, ['Red'] * len(self.data))
 
     def draw_data(self, data: list[int], color: list[str]) -> None:
-        self.sort_canvas.delete('all')
+        try:
+            self.sort_canvas.delete('all')
+        except TclError:  # Canvas does not exist (e.g. program was closed during the sorting process)
+            exit()
 
         canvas_height, canvas_width = 380, 500
         x_width = canvas_width / (len(data) + 1)
